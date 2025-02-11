@@ -12,16 +12,52 @@
         
         <div class="game-stats">
             <div id="timer">Time: 30</div>
+            <div id="wpm">WPM: 0</div>
             <div id="score">Score: 0</div>
+        </div>
+
+        <div class="game-controls">
+            <button id="pause-btn" class="control-btn" disabled>
+                <span class="button-text">Pause</span>
+            </button>
+            <button id="restart-btn" class="control-btn" disabled>Restart</button>
         </div>
 
         <div class="game-area">
             <div id="verse-container"></div>
-            <input type="text" id="typing-input" autocomplete="off" autofocus>
+            <div id="typing-area">
+                <div id="cursor" class="cursor-hidden"></div>
+            </div>
             <div id="message"></div>
+            <div class="stats-detail">
+                <div id="accuracy">Accuracy: 100%</div>
+                <div id="errors">Errors: 0</div>
+            </div>
         </div>
+
+        <div class="bonus-notification" id="bonus-notification">
+            +20 seconds!
+        </div>
+
+        <div class="pause-overlay" id="pause-overlay">
+            <div class="pause-content">
+                <div class="pause-message">PAUSED</div>
+                <button id="resume-btn" class="resume-btn">Resume Game</button>
+            </div>
+        </div>
+
+        <button id="start-btn" class="start-btn">Start Game</button>
     </div>
 
+    <!-- Hidden input for capturing keystrokes -->
+    <input type="text" id="hidden-input" style="position: absolute; opacity: 0; pointer-events: none;">
+
+    <!-- Audio elements -->
+    <audio id="correctSound" src="sounds/correct.mp3" preload="auto"></audio>
+    <audio id="incorrectSound" src="sounds/incorrect.mp3" preload="auto"></audio>
+    <audio id="bonusSound" src="sounds/bonus.mp3" preload="auto"></audio>
+
+    <script src="js/verses.js"></script>
     <script src="js/game.js"></script>
 </body>
 </html>
