@@ -16,10 +16,18 @@
             <div id="score">Score: 0</div>
         </div>
 
+        <div class="game-controls">
+            <button id="pause-btn" class="control-btn" disabled>
+                <span class="pause-icon">❚❚</span>
+                <span class="play-icon">▶</span>
+            </button>
+            <button id="restart-btn" class="control-btn" disabled>↺</button>
+        </div>
+
         <div class="game-area">
             <div id="verse-container"></div>
             <div id="typing-area">
-                <div id="cursor"></div>
+                <div id="cursor" class="cursor-hidden"></div>
             </div>
             <div id="message"></div>
             <div class="stats-detail">
@@ -31,6 +39,12 @@
         <div class="bonus-notification" id="bonus-notification">
             +20 seconds!
         </div>
+
+        <div class="pause-overlay" id="pause-overlay">
+            <div class="pause-message">PAUSED</div>
+        </div>
+
+        <button id="start-btn" class="start-btn">Start Game</button>
     </div>
 
     <!-- Hidden input for capturing keystrokes -->
