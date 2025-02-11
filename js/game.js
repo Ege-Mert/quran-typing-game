@@ -17,6 +17,15 @@ class QuranTypingGame {
         this.isStarted = false;
         this.timerInterval = null;
 
+        // Bound event handlers
+        this.handleInput = this.handleInput.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.maintainFocus = () => {
+            if (this.isStarted && !this.isPaused && !this.isGameOver) {
+                this.hiddenInput.focus();
+            }
+        };
+
         // DOM elements
         this.verseContainer = document.getElementById('verse-container');
         this.hiddenInput = document.getElementById('hidden-input');
@@ -73,11 +82,7 @@ class QuranTypingGame {
         });
 
         // Add click event to maintain focus
-        document.addEventListener('click', () => {
-            if (this.isStarted && !this.isPaused && !this.isGameOver) {
-                this.hiddenInput.focus();
-            }
-        });
+        document.addEventListener('click', this.maintainFocus);
 
         // Enable input only when game is started
         this.hiddenInput.disabled = true;
@@ -86,11 +91,12 @@ class QuranTypingGame {
     startGame() {
         this.isStarted = true;
         this.hiddenInput.disabled = false;
+        this.hiddenInput.value = ''; // Clear any existing input
         this.hiddenInput.focus();
         
         // Set up event listeners
-        this.hiddenInput.addEventListener('input', this.handleInput.bind(this));
-        this.hiddenInput.addEventListener('keydown', this.handleKeyDown.bind(this));
+        this.hiddenInput.addEventListener('input', this.handleInput);
+        this.hiddenInput.addEventListener('keydown', this.handleKeyDown);
         
         // Start the game
         this.displayVerse();
@@ -102,6 +108,10 @@ class QuranTypingGame {
     }
 
     resetGame() {
+        // Remove event listeners first
+        this.hiddenInput.removeEventListener('input', this.handleInput);
+        this.hiddenInput.removeEventListener('keydown', this.handleKeyDown);
+
         // Reset all game state
         this.verses = getRandomVerses(5);
         this.currentVerseIndex = 0;
@@ -114,6 +124,7 @@ class QuranTypingGame {
         this.isGameOver = false;
         this.isPaused = false;
         this.isStarted = false;
+        this.startTime = null;
 
         // Clear intervals
         clearInterval(this.timerInterval);
@@ -124,7 +135,7 @@ class QuranTypingGame {
         this.pauseButton.querySelector('.button-text').textContent = 'Pause';
         this.pauseOverlay.classList.remove('active');
         
-        // Disable input until game starts
+        // Disable and clear input until game starts
         this.hiddenInput.disabled = true;
         this.hiddenInput.value = '';
         
@@ -248,6 +259,9 @@ class QuranTypingGame {
             this.updateErrors();
         }
 
+        // Clear the input value to prevent it from accumulating
+        this.hiddenInput.value = '';
+
         // Update accuracy
         this.updateAccuracy();
     }
@@ -260,7 +274,7 @@ class QuranTypingGame {
     }
 
     updateAccuracy() {
-        const accuracy = Math.round((this.correctKeystrokes / this.totalKeystrokes) * 100);
+        const accuracy = Math.round((this.correctKeystrokes / this.totalKeystrokes) * 100) || 0;
         this.accuracyDisplay.textContent = `Accuracy: ${accuracy}%`;
     }
 
