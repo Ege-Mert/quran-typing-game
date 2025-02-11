@@ -21,6 +21,7 @@ body {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 h1 {
@@ -35,6 +36,9 @@ h1 {
     margin-bottom: 2rem;
     font-size: 1.2rem;
     font-weight: bold;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
 }
 
 .game-area {
@@ -51,35 +55,61 @@ h1 {
     padding: 1rem;
     background-color: #f8f9fa;
     border-radius: 5px;
+    position: relative;
 }
 
 #verse-container span {
     display: inline-block;
     padding: 0 2px;
+    transition: all 0.2s ease;
 }
 
 #verse-container span.correct {
     color: #28a745;
     background-color: #d4edda;
+    transform: scale(1.05);
 }
 
 #verse-container span.incorrect {
     color: #dc3545;
     background-color: #f8d7da;
+    animation: shake 0.2s ease-in-out;
 }
 
-#typing-input {
-    padding: 0.8rem;
-    font-size: 1.2rem;
-    border: 2px solid #ddd;
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+#typing-area {
+    position: relative;
+    height: 50px;
+    background-color: #f8f9fa;
     border-radius: 5px;
-    width: 100%;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#typing-input:focus {
-    outline: none;
-    border-color: #007bff;
+#cursor {
+    position: absolute;
+    width: 2px;
+    height: 24px;
+    background-color: #007bff;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.stats-detail {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1rem;
+    color: #6c757d;
 }
 
 #message {
@@ -87,4 +117,62 @@ h1 {
     font-size: 1.1rem;
     min-height: 1.5rem;
     color: #6c757d;
+    font-weight: bold;
+}
+
+.bonus-notification {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #28a745;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.bonus-notification.show {
+    animation: slideUp 1s ease-out;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 0);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -100%);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    #verse-container {
+        font-size: 1.2rem;
+    }
+
+    .game-stats {
+        font-size: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 }
