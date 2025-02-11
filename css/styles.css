@@ -1,0 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 800px;
+    width: 90%;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.game-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+#verse-container {
+    font-size: 1.5rem;
+    line-height: 1.8;
+    text-align: center;
+    min-height: 100px;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+#verse-container span {
+    display: inline-block;
+    padding: 0 2px;
+}
+
+#verse-container span.correct {
+    color: #28a745;
+    background-color: #d4edda;
+}
+
+#verse-container span.incorrect {
+    color: #dc3545;
+    background-color: #f8d7da;
+}
+
+#typing-input {
+    padding: 0.8rem;
+    font-size: 1.2rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+}
+
+#typing-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+#message {
+    text-align: center;
+    font-size: 1.1rem;
+    min-height: 1.5rem;
+    color: #6c757d;
+}
