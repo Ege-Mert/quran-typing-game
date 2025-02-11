@@ -13,6 +13,8 @@ class QuranTypingGame {
         this.correctKeystrokes = 0;
         this.startTime = null;
         this.isGameOver = false;
+        this.isPaused = false;
+        this.isStarted = false;
         this.timerInterval = null;
 
         // DOM elements
@@ -26,6 +28,10 @@ class QuranTypingGame {
         this.errorsDisplay = document.getElementById('errors');
         this.bonusNotification = document.getElementById('bonus-notification');
         this.cursor = document.getElementById('cursor');
+        this.pauseOverlay = document.getElementById('pause-overlay');
+        this.startButton = document.getElementById('start-btn');
+        this.pauseButton = document.getElementById('pause-btn');
+        this.restartButton = document.getElementById('restart-btn');
 
         // Sound elements
         this.correctSound = document.getElementById('correctSound');
@@ -33,11 +39,38 @@ class QuranTypingGame {
         this.bonusSound = document.getElementById('bonusSound');
 
         // Initialize game
-        this.init();
+        this.initControls();
     }
 
-    init() {
-        // Focus hidden input and maintain focus
+    initControls() {
+        // Start button
+        this.startButton.addEventListener('click', () => {
+            this.startGame();
+            this.startButton.classList.add('hidden');
+            this.pauseButton.disabled = false;
+            this.restartButton.disabled = false;
+        });
+
+        // Pause button
+        this.pauseButton.addEventListener('click', () => {
+            if (this.isPaused) {
+                this.resumeGame();
+            } else {
+                this.pauseGame();
+            }
+        });
+
+        // Restart button
+        this.restartButton.addEventListener('click', () => {
+            this.restartGame();
+        });
+
+        // Hide cursor initially
+        this.cursor.classList.add('cursor-hidden');
+    }
+
+    startGame() {
+        this.isStarted = true;
         this.hiddenInput.focus();
         document.addEventListener('click', () => this.hiddenInput.focus());
         
@@ -49,9 +82,57 @@ class QuranTypingGame {
         this.displayVerse();
         this.startTimer();
         this.startTime = Date.now();
+    }
 
-        // Set initial cursor position
-        this.updateCursorPosition();
+    pauseGame() {
+        if (!this.isStarted || this.isGameOver) return;
+
+        this.isPaused = true;
+        clearInterval(this.timerInterval);
+        this.pauseOverlay.classList.add('active');
+        this.hiddenInput.disabled = true;
+        this.pauseButton.classList.add('paused');
+    }
+
+    resumeGame() {
+        if (!this.isStarted || this.isGameOver) return;
+
+        this.isPaused = false;
+        this.startTimer();
+        this.pauseOverlay.classList.remove('active');
+        this.hiddenInput.disabled = false;
+        this.hiddenInput.focus();
+        this.pauseButton.classList.remove('paused');
+    }
+
+    restartGame() {
+        // Reset all game state
+        this.verses = getRandomVerses(5);
+        this.currentVerseIndex = 0;
+        this.currentLetterIndex = 0;
+        this.timer = 30;
+        this.score = 0;
+        this.wpm = 0;
+        this.totalKeystrokes = 0;
+        this.correctKeystrokes = 0;
+        this.startTime = Date.now();
+        this.isGameOver = false;
+        this.isPaused = false;
+
+        // Clear intervals and reset UI
+        clearInterval(this.timerInterval);
+        this.pauseOverlay.classList.remove('active');
+        this.pauseButton.classList.remove('paused');
+        this.updateScore();
+        this.updateWPM();
+        this.updateAccuracy();
+        this.updateErrors();
+        
+        // Start fresh
+        this.displayVerse();
+        this.startTimer();
+        this.hiddenInput.disabled = false;
+        this.hiddenInput.focus();
     }
 
     displayVerse() {
@@ -63,6 +144,10 @@ class QuranTypingGame {
         verse.split('').forEach((char, index) => {
             const span = document.createElement('span');
             span.textContent = char;
+            // Add extra margin after space characters
+            if (char === ' ' && index < verse.length - 1) {
+                span.style.marginRight = '0.5em';
+            }
             this.verseContainer.appendChild(span);
         });
 
@@ -85,6 +170,8 @@ class QuranTypingGame {
     }
 
     handleKeyDown(event) {
+        if (this.isPaused || !this.isStarted || this.isGameOver) return;
+
         // Prevent backspace from navigating back
         if (event.key === 'Backspace') {
             event.preventDefault();
@@ -101,7 +188,7 @@ class QuranTypingGame {
     }
 
     handleInput(event) {
-        if (this.isGameOver) return;
+        if (this.isPaused || !this.isStarted || this.isGameOver) return;
 
         const inputChar = event.data;
         if (!inputChar) return; // Handle backspace or other special keys
@@ -220,8 +307,9 @@ class QuranTypingGame {
     gameOver() {
         this.isGameOver = true;
         clearInterval(this.timerInterval);
-        this.messageDisplay.textContent = 'Game Over! Refresh to try again.';
+        this.messageDisplay.textContent = 'Game Over! Press restart to try again.';
         this.hiddenInput.disabled = true;
+        this.pauseButton.disabled = true;
 
         // Save high score
         this.saveHighScore();
@@ -235,6 +323,7 @@ class QuranTypingGame {
             WPM: ${this.wpm}
             Accuracy: ${Math.round((this.correctKeystrokes / this.totalKeystrokes) * 100)}%`;
         this.hiddenInput.disabled = true;
+        this.pauseButton.disabled = true;
 
         // Save high score
         this.saveHighScore();
